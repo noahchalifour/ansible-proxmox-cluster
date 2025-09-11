@@ -2,7 +2,7 @@
 - hosts: proxmox_nodes
   roles:
     - roles/preconfigure
-    # - lae.proxmox
+    - lae.proxmox
     - roles/network
     - roles/pve_users
     - roles/pve_auth_tokens

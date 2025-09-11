@@ -1,0 +1,15 @@
+pve_group: proxmox_nodes
+pve_cluster_enabled: true
+pve_cluster_clustername: pvec01
+pve_ceph_enabled: true
+pve_ceph_pools:
+  # Ceph pool used for VM disks
+  - name: ceph-vm
+    # TODO: Update this to 128 once 3 machines are added
+    pgs: 32
+    storage: true
+    application: rbd
+    rule: replicated_rule
+    # TODO: Update these to 3 and 2 once I add another machine
+    size: 2
+    min-size: 1

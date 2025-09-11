@@ -9,7 +9,7 @@ ubuntu_cloud_vm_cores: 2                           # Number of CPU cores
 ubuntu_cloud_vm_machine: "q35"                     # VM machine type
 ubuntu_cloud_vm_bios: "ovmf"                       # BIOS for VM
 ubuntu_cloud_vm_bridge: "vmbr0"                    # Network bridge to use (e.g., vmbr0)
-ubuntu_cloud_vm_storage_pool: "local-lvm"          # Storage pool for the VM's disk (e.g., local-lvm, local-zfs, local)
+ubuntu_cloud_vm_storage_pool: "ceph-vm"          # Storage pool for the VM's disk (e.g., local-lvm, local-zfs, local)
 
 # VM Cloud-init configuration
 ubuntu_cloud_ci_username: "ubuntu"                 # Default cloud-init user
