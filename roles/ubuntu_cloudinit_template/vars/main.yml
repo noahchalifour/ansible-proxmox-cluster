@@ -1,0 +1,3 @@
+# Proxmox authentication
+proxmox_user: "{{ lookup('ansible.builtin.env', 'PROXMOX_USER') }}"
+proxmox_password: "{{ lookup('ansible.builtin.env', 'PROXMOX_PASSWORD') }}"

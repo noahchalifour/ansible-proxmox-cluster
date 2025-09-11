@@ -1,0 +1,3 @@
+# SSH authentication
+ansible_user: "{{ lookup('ansible.builtin.env', 'PROXMOX_USER') | split('@') | first }}"
+ansible_password: "{{ lookup('ansible.builtin.env', 'PROXMOX_PASSWORD') }}"

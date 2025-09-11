@@ -1,0 +1,3 @@
+- name: Create the auth tokens for {{ proxmox_user }}
+  include_tasks: create_token.yml
+  with_items: "{{ pve_auth_token_ids }}"

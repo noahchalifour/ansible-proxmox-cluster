@@ -1,0 +1,7 @@
+collections:
+  - community.proxmox
+
+roles:
+  - name: lae.proxmox
+    src: https://github.com/lae/ansible-role-proxmox
+    version: develop

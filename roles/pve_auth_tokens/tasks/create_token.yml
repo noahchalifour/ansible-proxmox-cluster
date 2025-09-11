@@ -1,0 +1,21 @@
+- name: Create the '{{ item }}' token
+  command: pveum user token add {{ proxmox_user }} {{ item }}
+  register: create_token
+  changed_when: '"Token already exists." not in create_token.stderr'
+  failed_when: 'create_token.rc != 0 and "Token already exists." not in create_token.stderr'
+
+- name: Extract the value token from the output
+  set_fact:
+    token_value: "{{ create_token.stdout | regex_search('([0-9a-z]*-[0-9a-z]*-[0-9a-z]*-[0-9a-z]*-[0-9a-z]*)') }}"
+
+- name: Write the ansible api token secret to the vault
+  community.hashi_vault.vault_kv2_write:
+    url: "{{ hashicorp_vault_endpoint }}"
+    token: "{{ hashicorp_vault_token }}"
+    engine_mount_point: "kv"
+    path: "{{ proxmox_api_token_secret_path }}"
+    data:
+      token_id: "{{ item }}"
+      token_secret: "{{ token_value }}"
+  delegate_to: localhost
+  when: token_value != ""

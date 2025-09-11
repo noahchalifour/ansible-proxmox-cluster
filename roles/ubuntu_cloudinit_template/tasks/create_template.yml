@@ -1,0 +1,106 @@
+- name: Ensure the Proxmox host has `qemu-guest-agent` installed
+  ansible.builtin.apt:
+    name: qemu-guest-agent
+    state: present
+  when: ansible_os_family == 'Debian' # Only applies to Debian-based Proxmox hosts
+
+- name: Make sure pip3 is installed
+  ansible.builtin.apt:
+    name: python3-pip
+    state: present
+
+- name: Make sure proxmoxer is installed
+  ansible.builtin.pip:
+    name: proxmoxer
+    extra_args: "--break-system-packages"
+    state: present
+
+- name: Ensure Proxmox ISO directory (or a temp dir) exists
+  ansible.builtin.file:
+    path: "/tmp"
+    state: directory
+    mode: '1777'
+
+- name: Set Ubuntu Cloud Image download temp filepath
+  ansible.builtin.set_fact:
+    ubuntu_cloud_image_filepath: "{{ proxmox_temp_dir }}/{{ ubuntu_cloud_image_url | basename }}"
+
+- name: Download Ubuntu Cloud Image to Proxmox host if not exists
+  ansible.builtin.get_url:
+    url: "{{ ubuntu_cloud_image_url }}"
+    dest: "{{ ubuntu_cloud_image_filepath }}"
+    mode: '0644'
+
+- name: Create an empty Proxmox VM for the template
+  community.general.proxmox_kvm:
+    api_host: "{{ ansible_host }}"
+    api_user: "{{ proxmox_user }}"
+    api_password: "{{ proxmox_password }}"
+    vmid: "{{ ubuntu_cloud_vm_id }}"
+    node: "{{ inventory_hostname }}"
+    name: "{{ ubuntu_cloud_vm_name }}"
+    memory: "{{ ubuntu_cloud_vm_memory }}"
+    cores: "{{ ubuntu_cloud_vm_cores }}"
+    machine: "{{ ubuntu_cloud_vm_machine }}"
+    bios: "{{ ubuntu_cloud_vm_bios }}"
+    net:
+      net0: "model=virtio,bridge={{ ubuntu_cloud_vm_bridge }}"
+    efidisk0:
+      storage: "{{ ubuntu_cloud_vm_storage_pool }}"
+      format: raw
+      efitype: 4m
+      pre_enrolled_keys: 1
+    scsihw: "virtio-scsi-pci" # Recommended for cloud-init images
+    boot: "order=scsi0"       # Will be adjusted after disk import
+    ostype: "l26"             # Linux 2.6+ kernel
+    # Setting a serial console is often required for cloud-init images to see boot output
+    serial: 
+      serial0: "socket"
+    vga: "serial0"
+    state: present
+  register: create_proxmox_kvm
+    # No disk is created here, as we'll import the cloud image later.
+
+- name: Import the downloaded cloud image as the VM's main disk
+  community.general.proxmox_disk:
+    api_host: "{{ ansible_host }}"
+    api_user: "{{ proxmox_user }}"
+    api_password: "{{ proxmox_password }}"
+    vmid: "{{ ubuntu_cloud_vm_id }}"
+    disk: "scsi0"
+    import_from: "{{ ubuntu_cloud_image_filepath }}"
+    storage: "{{ ubuntu_cloud_vm_storage_pool }}"
+
+- name: Add Cloud-Init CD-ROM drive to the VM
+  ansible.builtin.command: >
+    qm set {{ ubuntu_cloud_vm_id }}
+      --ide2 {{ ubuntu_cloud_vm_storage_pool }}:cloudinit
+  register: add_cloud_init_result
+  changed_when: "'successfully created disk' in add_cloud_init_result.stdout"
+  failed_when: "add_cloud_init_result.rc != 0 and 'exists' not in add_cloud_init_result.stderr"
+
+- name: Configure Cloud-Init settings for the template (user, password)
+  ansible.builtin.command: >
+    qm set {{ ubuntu_cloud_vm_id }}
+      --ciuser {{ ubuntu_cloud_ci_username }}
+      --cipassword {{ ubuntu_cloud_ci_password }}
+      --ipconfig0 ip=dhcp
+  args:
+    stdin: ""
+  changed_when: false
+
+- name: Set QEMU Guest Agent enabled
+  ansible.builtin.command: >
+    qm set {{ ubuntu_cloud_vm_id }} --agent enabled=1
+  changed_when: false
+
+- name: Convert VM to a Proxmox template
+  ansible.builtin.command: >
+    qm template {{ ubuntu_cloud_vm_id }}
+  register: template_result
+  changed_when: "'Renamed' in template_result.stdout"
+  failed_when: "template_result.rc != 0 and 'convert a template to a template' not in template_result.stderr"
+
+- name: Display template creation status
+  ansible.builtin.debug:
+    msg: "Proxmox Cloud-Init Template '{{ ubuntu_cloud_vm_name }}' (VMID: {{ ubuntu_cloud_vm_id }}) created successfully!"

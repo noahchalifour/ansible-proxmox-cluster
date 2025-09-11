@@ -1,0 +1,3 @@
+pve_auth_token_ids:
+  - ansible
+  - terraform

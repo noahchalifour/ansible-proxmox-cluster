@@ -1,0 +1,9 @@
+# Configure Proxmox on the nodes
+- hosts: proxmox_nodes
+  roles:
+    - roles/preconfigure
+    # - lae.proxmox
+    - roles/network
+    - roles/pve_users
+    - roles/pve_auth_tokens
+    - roles/ubuntu_cloudinit_template

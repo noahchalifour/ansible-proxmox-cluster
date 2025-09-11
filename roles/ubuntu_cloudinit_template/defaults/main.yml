@@ -1,0 +1,19 @@
+# URL for the Ubuntu Cloud Image
+ubuntu_cloud_image_url: "https://cloud-images.ubuntu.com/releases/noble/release/ubuntu-24.04-server-cloudimg-amd64.img"
+
+# Ubuntu VM template configuration
+ubuntu_cloud_vm_id: 9000                           # Proxmox VM ID for the template. Choose a high ID to avoid conflicts.
+ubuntu_cloud_vm_name: "ubuntu-2404-cloud-template" # Name for the Proxmox VM template
+ubuntu_cloud_vm_memory: 2048                       # RAM in MB
+ubuntu_cloud_vm_cores: 2                           # Number of CPU cores
+ubuntu_cloud_vm_machine: "q35"                     # VM machine type
+ubuntu_cloud_vm_bios: "ovmf"                       # BIOS for VM
+ubuntu_cloud_vm_bridge: "vmbr0"                    # Network bridge to use (e.g., vmbr0)
+ubuntu_cloud_vm_storage_pool: "local-lvm"          # Storage pool for the VM's disk (e.g., local-lvm, local-zfs, local)
+
+# VM Cloud-init configuration
+ubuntu_cloud_ci_username: "ubuntu"                 # Default cloud-init user
+ubuntu_cloud_ci_password: "password"               # Set a strong default password (will be overwritten by clone options)
+
+# Proxmox variables
+proxmox_temp_dir: "/tmp"
