@@ -1,11 +1,11 @@
-- name: Create the '{{ item }}' token
-  command: pveum user token add {{ proxmox_user }} {{ item }}
+- name: "Create token: {{ item }}"
+  ansible.builtin.command: pveum user token add {{ pve_auth_tokens_user }} {{ item }}
   register: create_token
   changed_when: '"Token already exists." not in create_token.stderr'
   failed_when: 'create_token.rc != 0 and "Token already exists." not in create_token.stderr'
 
 - name: Extract the value token from the output
-  set_fact:
+  ansible.builtin.set_fact:
     token_value: "{{ create_token.stdout | regex_search('([0-9a-z]*-[0-9a-z]*-[0-9a-z]*-[0-9a-z]*-[0-9a-z]*)') }}"
 
 - name: Write the ansible api token secret to the vault

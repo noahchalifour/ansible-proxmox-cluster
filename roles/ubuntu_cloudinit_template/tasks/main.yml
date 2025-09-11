@@ -1,4 +1,4 @@
 - name: Create the template VM
-  include_tasks: create_template.yml
+  ansible.builtin.include_tasks: create_template.yml
   # Only create the template VM on the first
-  when: "{{ ansible_host == hostvars[groups['proxmox_nodes'] | sort | first]['ansible_host'] }}"
+  when: ansible_host == hostvars[groups['proxmox_nodes'] | sort | first]['ansible_host']

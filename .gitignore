@@ -1,2 +1,4 @@
+.ansible
 .env
+.gitlab-ci-local
 .vault-pass

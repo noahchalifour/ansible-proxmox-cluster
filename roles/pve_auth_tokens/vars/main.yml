@@ -1,1 +1,2 @@
-proxmox_user: "{{ lookup('ansible.builtin.env', 'PROXMOX_USER') }}"
+# Proxmox user
+pve_auth_tokens_user: "{{ lookup('ansible.builtin.env', 'PROXMOX_USER') }}"

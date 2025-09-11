@@ -1,5 +1,5 @@
 - name: Install required apt packages
-  apt:
+  ansible.builtin.apt:
     pkg:
       - python3-packaging
       - python3-apt

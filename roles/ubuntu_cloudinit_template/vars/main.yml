@@ -1,3 +1,3 @@
 # Proxmox authentication
-proxmox_user: "{{ lookup('ansible.builtin.env', 'PROXMOX_USER') }}"
-proxmox_password: "{{ lookup('ansible.builtin.env', 'PROXMOX_PASSWORD') }}"
+ubuntu_cloudinit_template_proxmox_user: "{{ lookup('ansible.builtin.env', 'PROXMOX_USER') }}"
+ubuntu_cloudinit_template_proxmox_password: "{{ lookup('ansible.builtin.env', 'PROXMOX_PASSWORD') }}"

@@ -8,7 +8,17 @@ tasks:
   install:
     desc: Install all dependencies
     cmds:
-      - ansible-galaxy install -r requirements.yml
+      - pip install -r requirements/pip.txt
+      - ansible-galaxy install -r requirements/ansible.yml
+
+  # Validate configuration
+  validate:
+    desc: Validate the Ansible playbooks
+    deps:
+      - install
+    cmds:
+      - ansible-lint
+      - ansible-playbook --syntax-check main.yml
 
   # Deploy to an environment
   deploy:
