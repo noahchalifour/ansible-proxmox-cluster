@@ -1,12 +1,12 @@
 - name: "Create token: {{ item }}"
   ansible.builtin.command: pveum user token add {{ pve_auth_tokens_user }} {{ item }}
-  register: create_token
-  changed_when: '"Token already exists." not in create_token.stderr'
-  failed_when: 'create_token.rc != 0 and "Token already exists." not in create_token.stderr'
+  register: pve_auth_tokens_create_token
+  changed_when: '"Token already exists." not in pve_auth_tokens_create_token.stderr'
+  failed_when: 'pve_auth_tokens_create_token.rc != 0 and "Token already exists." not in pve_auth_tokens_create_token.stderr'
 
 - name: Extract the value token from the output
   ansible.builtin.set_fact:
-    token_value: "{{ create_token.stdout | regex_search('([0-9a-z]*-[0-9a-z]*-[0-9a-z]*-[0-9a-z]*-[0-9a-z]*)') }}"
+    pve_auth_tokens_token_value: "{{ pve_auth_tokens_create_token.stdout | regex_search('([0-9a-z]*-[0-9a-z]*-[0-9a-z]*-[0-9a-z]*-[0-9a-z]*)') }}"
 
 - name: Write the ansible api token secret to the vault
   community.hashi_vault.vault_kv2_write:
@@ -16,6 +16,6 @@
     path: "{{ proxmox_api_token_secret_path }}"
     data:
       token_id: "{{ item }}"
-      token_secret: "{{ token_value }}"
+      token_secret: "{{ pve_auth_tokens_token_value }}"
   delegate_to: localhost
-  when: token_value != ""
+  when: pve_auth_tokens_token_value != ""

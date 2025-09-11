@@ -58,7 +58,6 @@
       serial0: "socket"
     vga: "serial0"
     state: present
-  register: create_proxmox_kvm
     # No disk is created here, as we'll import the cloud image later.
 
 - name: Import the downloaded cloud image as the VM's main disk
@@ -75,9 +74,9 @@
   ansible.builtin.command: >
     qm set {{ ubuntu_cloudinit_template_vm_id }}
       --ide2 {{ ubuntu_cloudinit_template_vm_storage_pool }}:cloudinit
-  register: add_cloud_init_result
-  changed_when: "'successfully created disk' in add_cloud_init_result.stdout"
-  failed_when: "add_cloud_init_result.rc != 0 and 'exists' not in add_cloud_init_result.stderr"
+  register: ubuntu_cloudinit_template_add_cloud_init_result
+  changed_when: "'successfully created disk' in ubuntu_cloudinit_template_add_cloud_init_result.stdout"
+  failed_when: "ubuntu_cloudinit_template_add_cloud_init_result.rc != 0 and 'exists' not in ubuntu_cloudinit_template_add_cloud_init_result.stderr"
 
 - name: Configure Cloud-Init settings for the template (user, password)
   ansible.builtin.command: >
@@ -97,9 +96,9 @@
 - name: Convert VM to a Proxmox template
   ansible.builtin.command: >
     qm template {{ ubuntu_cloudinit_template_vm_id }}
-  register: template_result
-  changed_when: "'Renamed' in template_result.stdout"
-  failed_when: "template_result.rc != 0 and 'convert a template to a template' not in template_result.stderr"
+  register: ubuntu_cloudinit_template_result
+  changed_when: "'Renamed' in ubuntu_cloudinit_template_result.stdout"
+  failed_when: "ubuntu_cloudinit_template_result.rc != 0 and 'convert a template to a template' not in ubuntu_cloudinit_template_result.stderr"
 
 - name: Display template creation status
   ansible.builtin.debug:
