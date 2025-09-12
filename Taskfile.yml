@@ -26,15 +26,10 @@ tasks:
     deps:
       - install
     vars:
-      ENV: '{{ .ENV | default "dev" }}'
-      INVENTORY_ARG: |
-        {{- if eq .ENV "dev" -}}
-        {{- else -}}
-          -i inventories/proxmox.yml
-        {{- end -}}
+      INVENTORY: 'inventories/{{ .INVENTORY | default "proxmox" }}.yml'
     cmds:
       - >-
         ansible-playbook
-        {{ .INVENTORY_ARG }}
+        -i {{ .INVENTORY }}
         --vault-password-file .vault-pass
         main.yml
