@@ -10,5 +10,6 @@
 
 - name: Configure VM guests
   hosts: proxmox_all_qemu
+  become: true
   roles:
     - qemu_vm

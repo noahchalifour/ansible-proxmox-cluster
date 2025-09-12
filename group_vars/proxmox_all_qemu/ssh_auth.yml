@@ -1,0 +1,2 @@
+# SSH authentication
+ansible_user: "{{ proxmox_ciuser }}"
