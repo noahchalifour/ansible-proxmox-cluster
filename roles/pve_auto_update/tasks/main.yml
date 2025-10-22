@@ -1,0 +1,54 @@
+---
+- name: Deploy Proxmox auto-update script
+  ansible.builtin.template:
+    src: pve-auto-update.sh.j2
+    dest: "{{ pve_auto_update_script_path }}"
+    owner: root
+    group: root
+    mode: '0755'
+  notify: Restart cron
+
+- name: Ensure log file exists
+  ansible.builtin.file:
+    path: "{{ pve_auto_update_log_file }}"
+    state: touch
+    owner: root
+    group: root
+    mode: '0644'
+    modification_time: preserve
+    access_time: preserve
+
+- name: Configure logrotate for update logs
+  ansible.builtin.copy:
+    content: |
+      {{ pve_auto_update_log_file }} {
+          weekly
+          rotate 12
+          compress
+          delaycompress
+          missingok
+          notifempty
+          create 0644 root root
+      }
+    dest: /etc/logrotate.d/pve-auto-update
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Set up cron job for automatic updates
+  ansible.builtin.cron:
+    name: "Proxmox VE automatic updates"
+    minute: "{{ pve_auto_update_cron_minute }}"
+    hour: "{{ pve_auto_update_cron_hour }}"
+    job: "{{ pve_auto_update_script_path }}"
+    user: root
+    state: "{{ 'present' if pve_auto_update_enabled else 'absent' }}"
+
+- name: Display auto-update status
+  ansible.builtin.debug:
+    msg: >
+      Proxmox auto-updates are {{ 'enabled' if pve_auto_update_enabled else 'disabled' }}.
+      {% if pve_auto_update_enabled %}
+      Updates will run daily at {{ pve_auto_update_cron_hour }}:{{ pve_auto_update_cron_minute }}.
+      Auto-reboot is {{ 'enabled' if pve_auto_update_auto_reboot else 'disabled' }}.
+      {% endif %}

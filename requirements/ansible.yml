@@ -4,4 +4,6 @@ collections:
 roles:
   - name: lae.proxmox
     src: https://github.com/lae/ansible-role-proxmox
-    version: develop
+    # This is the commit hash right after the PR that adds Proxmox VE 9 support
+    # TODO: Update to a released version when available
+    version: fbf44c82768822fb917c6e72faeaf7ff29c1456d

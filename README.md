@@ -84,12 +84,9 @@ Create a `.env` file in the root directory:
 
 ```bash
 # Proxmox Authentication
+PROXMOX_URL="http://pve0.lan:8006"
 PROXMOX_USER="root@pam"
 PROXMOX_PASSWORD="your-password"
-
-# HashiCorp Vault (optional)
-HASHICORP_VAULT_ENDPOINT="https://vault.example.com"
-HASHICORP_VAULT_TOKEN="your-vault-token"
 ```
 
 ### Inventory Configuration
@@ -182,8 +179,6 @@ proxmox-ansible/
 |----------|-------------|----------|---------|
 | `PROXMOX_USER` | Proxmox username (e.g., root@pam) | Yes | - |
 | `PROXMOX_PASSWORD` | Proxmox password | Yes | - |
-| `HASHICORP_VAULT_ENDPOINT` | Vault server URL | No | - |
-| `HASHICORP_VAULT_TOKEN` | Vault authentication token | No | - |
 
 ## Troubleshooting
 

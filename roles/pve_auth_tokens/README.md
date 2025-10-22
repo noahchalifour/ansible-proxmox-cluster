@@ -50,6 +50,7 @@ proxmox_api_token_secret_path: "proxmox/api-tokens"
 ### Environment Variables
 
 ```bash
+PROXMOX_URL="http://pve0.lan:8006"
 PROXMOX_USER="root@pam"           # Proxmox user with token creation privileges
 PROXMOX_PASSWORD="your-password"  # User password
 ```

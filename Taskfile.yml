@@ -10,6 +10,7 @@ tasks:
     cmds:
       - pip install -r requirements/pip.txt
       - ansible-galaxy install -r requirements/ansible.yml
+      - ./requirements/install.sh
 
   # Validate configuration
   validate:

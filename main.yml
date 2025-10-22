@@ -7,6 +7,7 @@
     - pve_users
     - pve_auth_tokens
     - ubuntu_cloudinit_template
+    - pve_auto_update
 
 - name: Configure VM guests
   hosts: proxmox_all_qemu

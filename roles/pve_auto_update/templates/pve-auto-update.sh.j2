@@ -1,0 +1,60 @@
+#!/bin/bash
+# Proxmox VE Automatic Update Script
+# Managed by Ansible - DO NOT EDIT MANUALLY
+
+set -e
+
+LOG_FILE="{{ pve_auto_update_log_file }}"
+AUTO_REBOOT={{ pve_auto_update_auto_reboot | lower }}
+
+# Function to log messages
+log_message() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
+}
+
+# Function to check if reboot is required
+check_reboot_required() {
+    if [ -f /var/run/reboot-required ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+log_message "=== Starting Proxmox VE update process ==="
+
+# Update package lists
+log_message "Running pveupdate to refresh package lists..."
+if pveupdate >> "$LOG_FILE" 2>&1; then
+    log_message "Package lists updated successfully"
+else
+    log_message "ERROR: Failed to update package lists"
+    exit 1
+fi
+
+# Perform upgrade
+log_message "Running pveupgrade to install updates..."
+if DEBIAN_FRONTEND=noninteractive pveupgrade -y >> "$LOG_FILE" 2>&1; then
+    log_message "System upgraded successfully"
+else
+    log_message "ERROR: Failed to upgrade system"
+    exit 1
+fi
+
+# Check if reboot is required
+if check_reboot_required; then
+    log_message "System reboot is required"
+    
+    if [ "$AUTO_REBOOT" = "true" ]; then
+        log_message "Auto-reboot is enabled. Rebooting system in 1 minute..."
+        shutdown -r +1 "Proxmox VE updates require a reboot. Rebooting in 1 minute."
+    else
+        log_message "Auto-reboot is disabled. Please reboot manually when convenient."
+    fi
+else
+    log_message "No reboot required"
+fi
+
+log_message "=== Update process completed successfully ==="
+
+exit 0

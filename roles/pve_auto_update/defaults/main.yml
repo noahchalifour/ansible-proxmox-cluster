@@ -1,0 +1,16 @@
+---
+# Script location
+pve_auto_update_script_path: /usr/local/bin/pve-auto-update.sh
+
+# Log file location
+pve_auto_update_log_file: /var/log/pve-auto-update.log
+
+# Cron schedule (daily at 3:00 AM by default)
+pve_auto_update_cron_hour: "3"
+pve_auto_update_cron_minute: "0"
+
+# Whether to enable automatic updates
+pve_auto_update_enabled: true
+
+# Whether to automatically reboot if required (set to false by default for safety)
+pve_auto_update_auto_reboot: false

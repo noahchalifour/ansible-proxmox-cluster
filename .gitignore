@@ -2,3 +2,4 @@
 .env
 .gitlab-ci-local
 .vault-pass
+.python-version
