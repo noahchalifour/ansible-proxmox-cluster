@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Check if sudo is available
+if command -v sudo &> /dev/null; then
+  SUDO="sudo"
+else
+  SUDO=""
+fi
+
 if command -v apt-get &> /dev/null; then
   install_cmd="apt-get install -y"
 elif command -v yum &> /dev/null; then
@@ -14,4 +21,4 @@ else
 fi
 
 # Install dependencies
-sudo $install_cmd sshpass
+$SUDO $install_cmd sshpass
