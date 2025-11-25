@@ -13,6 +13,9 @@ pve_ceph_pools:
     # TODO: Update these to 3 and 2 once I add another machine
     size: 2
     min-size: 1
+# TODO: Need to figure out how to add content types for cephfs
+# iso - images, import
+# snippets - snippets
 pve_ceph_fs:
   - name: ceph-iso
     # TODO: Update this to 128 once 3 machines are added
