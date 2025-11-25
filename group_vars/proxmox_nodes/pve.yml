@@ -6,10 +6,23 @@ pve_ceph_pools:
   # Ceph pool used for VM disks
   - name: ceph-vm
     # TODO: Update this to 128 once 3 machines are added
-    pgs: 32
+    pgs: 16
     storage: true
     application: rbd
     rule: replicated_rule
     # TODO: Update these to 3 and 2 once I add another machine
     size: 2
     min-size: 1
+pve_ceph_fs:
+  - name: ceph-iso
+    # TODO: Update this to 128 once 3 machines are added
+    pgs: 16
+    storage: true
+    rule: replicated_rule
+    mountpoint: /srv/proxmox/ceph/iso
+  - name: ceph-snippets
+    # TODO: Update this to 128 once 3 machines are added
+    pgs: 16
+    storage: true
+    rule: replicated_rule
+    mountpoint: /srv/proxmox/ceph/snippets
