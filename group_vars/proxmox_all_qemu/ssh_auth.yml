@@ -1,3 +1,3 @@
 # SSH authentication
 ansible_host: "{{ proxmox_ipconfig0.ip | default(proxmox_net0.ip) | ipaddr('address') }}"
-ansible_user: "{{ proxmox_ciuser }}"
+ansible_user: "{{ proxmox_ciuser | default('ubuntu') }}"

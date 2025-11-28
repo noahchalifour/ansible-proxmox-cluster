@@ -1,3 +1,5 @@
 plugin: community.proxmox.proxmox
 want_facts: true
 want_proxmox_nodes_ansible_host: true
+filters:
+  - "'home-assistant' not in proxmox_tags_parsed"
