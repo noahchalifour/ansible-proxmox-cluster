@@ -11,6 +11,14 @@ pve_ceph_pools:
     rule: replicated_rule
     size: 3
     min-size: 2
+  # Ceph pool used for Kubernetes PVCs
+  - name: ceph-kubernetes
+    pgs: 32
+    storage: true
+    application: rbd
+    rule: replicated_rule
+    size: 3
+    min-size: 2
 # TODO: Need to figure out how to add content types for cephfs
 # iso - images, import
 # snippets - snippets
