@@ -59,7 +59,7 @@ tasks:
         {{- end -}}
     cmds:
       - >-
-        ansible-inventory 
+        ansible-inventory
         {{ .SSH_PRIVATE_KEY_ARG }}
         -i {{ .INVENTORY }}
         --vault-password-file {{ .VAULT_PASSWORD }}
