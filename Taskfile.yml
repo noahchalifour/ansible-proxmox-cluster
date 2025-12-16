@@ -64,3 +64,17 @@ tasks:
         -i {{ .INVENTORY }}
         --vault-password-file {{ .VAULT_PASSWORD }}
         --list
+
+  decrypt:
+    desc: Decrypt Ansible Vault files for viewing
+    vars:
+      VAULT_PASSWORD: '{{ .VAULT_PASSWORD | default ".vault-pass" }}'
+    cmds:
+      - ansible-vault view "{{ .CLI_ARGS }}" --vault-password-file "{{ .VAULT_PASSWORD }}"
+
+  encrypt:
+    desc: Encrypt Ansible Vault files for secure storage
+    vars:
+      VAULT_PASSWORD: '{{ .VAULT_PASSWORD | default ".vault-pass" }}'
+    cmds:
+      - ansible-vault encrypt "{{ .CLI_ARGS }}" --vault-password-file "{{ .VAULT_PASSWORD }}"
